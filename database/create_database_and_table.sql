@@ -2,6 +2,10 @@
    Crear la base de datos
    ========================= */
 
+SET QUOTED_IDENTIFIER ON;
+SET ANSI_NULLS ON;
+GO
+
 IF DB_ID('UsersDb') IS NULL
     CREATE DATABASE UsersDb;
 GO
@@ -31,17 +35,17 @@ END
 GO
 
 
-IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'UX_Users_UserName')
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'UX_Users_UserName' AND object_id = OBJECT_ID('dbo.Users'))
     CREATE UNIQUE NONCLUSTERED INDEX UX_Users_UserName
         ON dbo.Users (UserName);
 GO
 
-IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'UX_Users_Email')
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'UX_Users_Email' AND object_id = OBJECT_ID('dbo.Users'))
     CREATE UNIQUE NONCLUSTERED INDEX UX_Users_Email
         ON dbo.Users (Email);
 GO
 
-IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Users_Active')
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Users_Active' AND object_id = OBJECT_ID('dbo.Users'))
     CREATE NONCLUSTERED INDEX IX_Users_Active
         ON dbo.Users (CreatedDate)
         INCLUDE (UserName, Email)
@@ -138,6 +142,10 @@ BEGIN
             Status      = @Status,
             UpdatedDate = SYSUTCDATETIME()
         WHERE Id = @Id;
+
+        SELECT Id, UserName, Email, Status, CreatedDate, UpdatedDate
+        FROM dbo.Users
+        WHERE Id = @Id;
     END TRY
     BEGIN CATCH
         IF ERROR_NUMBER() IN (2601, 2627)
@@ -162,5 +170,9 @@ BEGIN
 
     IF @@ROWCOUNT = 0
         THROW 50003, 'El usuario no existe.', 1;
+
+    SELECT Id, UserName, Email, Status, CreatedDate, UpdatedDate
+    FROM dbo.Users
+    WHERE Id = @Id;
 END
 GO
