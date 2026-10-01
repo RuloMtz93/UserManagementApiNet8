@@ -1,3 +1,4 @@
+using UserManagementApi.Middleware;
 using UserManagementApi.Repositories;
 using UserManagementApi.Services;
 
@@ -21,6 +22,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 // 3. Configurar pipeline HTTP
 if (app.Environment.IsDevelopment())
