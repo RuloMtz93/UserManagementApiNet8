@@ -16,9 +16,7 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
-    /// <summary>
     /// Registra un nuevo usuario con contraseña hasheada.
-    /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(UserResponseDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -29,9 +27,7 @@ public class UsersController : ControllerBase
         return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
     }
 
-    /// <summary>
     /// Obtiene la lista de usuarios activos (Status = 1).
-    /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<UserResponseDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetActiveUsers()
@@ -40,9 +36,7 @@ public class UsersController : ControllerBase
         return Ok(users);
     }
 
-    /// <summary>
     /// Consulta un usuario por su identificador único (GUID).
-    /// </summary>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(UserResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -52,9 +46,7 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 
-    /// <summary>
     /// Actualiza el Email y el Status de un usuario existente.
-    /// </summary>
     [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(UserResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -66,10 +58,8 @@ public class UsersController : ControllerBase
         return Ok(updatedUser);
     }
 
-    /// <summary>
     /// Desactiva un usuario (borrado lógico, Status = 0).
-    /// </summary>
-    [HttpDelete("{id:guid}")]
+    [HttpPatch("{id:guid}/deactivate")]
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeactivateUser(Guid id)
